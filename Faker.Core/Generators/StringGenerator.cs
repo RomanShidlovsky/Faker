@@ -23,7 +23,7 @@ namespace Faker.Core.Generators
 
         public bool CanGenerate(Type type)
         {
-            return type == typeof(char);
+            return type == typeof(string);
         }
     }
 }
