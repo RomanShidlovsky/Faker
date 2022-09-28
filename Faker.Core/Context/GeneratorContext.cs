@@ -1,6 +1,6 @@
 ﻿using Faker.Core.Interfaces;
 
-namespace Faker.Core
+namespace Faker.Core.Context
 {
     public class GeneratorContext
     {
