@@ -6,12 +6,15 @@ namespace Faker.Core.Generators
 {
     public class UserTypeGenerator : IValueGenerator
     {
+        private Stack<Type> _createdTypes = new Stack<Type>();
+        private readonly int _recursiveLimit = 1;
         public object Generate(Type typeToGenerate, GeneratorContext context)
         {
             object Obj = CreateObject(typeToGenerate, context);
+            _createdTypes.Push(typeToGenerate);
             InitFields(Obj, typeToGenerate, context);
             InitProperties(Obj, typeToGenerate, context);
-
+            _createdTypes.Pop();
             return Obj;
         }
 
@@ -39,6 +42,13 @@ namespace Faker.Core.Generators
                 catch
                 { }
             }
+            try
+            {
+                var obj = Activator.CreateInstance(typeToCreate);
+                if (obj != null)
+                    return obj;
+            }
+            catch { }
             throw new TypeException($"Can't create instance of {typeToCreate.Name}", typeToCreate);
         }
 
@@ -53,6 +63,9 @@ namespace Faker.Core.Generators
                 {
                     if (Equals(field.GetValue(objectToInit), GetDefaultValue(field.FieldType)))
                     {
+                        if (!CanInit(field.FieldType))
+                            continue;
+                        
                         field.SetValue(objectToInit, context.Faker.Create(field.FieldType));
                     }
                 }
@@ -72,6 +85,9 @@ namespace Faker.Core.Generators
                 {
                     if (Equals(property.GetValue(objectToInit), GetDefaultValue(property.PropertyType)))
                     {
+                        if (!CanInit(property.PropertyType))
+                            continue;
+
                         property.SetValue(objectToInit, context.Faker.Create(property.PropertyType));
                     }
                 }
@@ -80,7 +96,13 @@ namespace Faker.Core.Generators
             }
         }
 
-        public static object? GetDefaultValue(Type type)
+        private bool CanInit(Type type)
+        {
+            return _createdTypes.Where(p => p == type)
+                .Count() <= _recursiveLimit;
+        }
+
+        public static  object? GetDefaultValue(Type type)
         {
             return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
