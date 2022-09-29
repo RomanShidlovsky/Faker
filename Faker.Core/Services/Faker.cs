@@ -1,6 +1,7 @@
 ﻿using Faker.Core.Interfaces;
 using Faker.Core.Context;
 using Faker.Core.Exceptions;
+using Faker.Core.Generators;
 
 namespace Faker.Core.Services
 {
@@ -26,6 +27,14 @@ namespace Faker.Core.Services
                 .Select(t => (IValueGenerator?)Activator.CreateInstance(t))
                 .Where(g => g != null)
                 .ToList();
+
+            var userTypeGenerator = generators.Find(g => g.GetType() == typeof(UserTypeGenerator));
+            if (userTypeGenerator != null && generators.IndexOf(userTypeGenerator) != generators.Count - 1)
+            {
+                generators.Remove(userTypeGenerator);
+                generators.Add(userTypeGenerator);
+            }
+
             return generators;
         }
 

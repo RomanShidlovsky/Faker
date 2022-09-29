@@ -3,6 +3,7 @@ using Faker.Core.Interfaces;
 using Faker.Core.Tests.TestClasses;
 using Faker.Core.Services;
 using Faker.Core.Generators;
+using System.Collections;
 
 namespace Faker.Core.Tests
 {
@@ -17,6 +18,7 @@ namespace Faker.Core.Tests
         }
 
         [Test]
+        [TestCase(typeof(DateTime))]
         [TestCase(typeof(byte))]
         [TestCase(typeof(short))]
         [TestCase(typeof(int))]
@@ -29,6 +31,8 @@ namespace Faker.Core.Tests
         [TestCase(typeof(char))]
         [TestCase(typeof(TestInit))]
         [TestCase(typeof(TestCtorStruct))]
+        [TestCase(typeof(List<List<int>>))]
+        
         public void CreatePrimitiveTest(Type type)
         {
             Assert.DoesNotThrow(() => _faker.Create(type));
@@ -112,6 +116,30 @@ namespace Faker.Core.Tests
             {
                 Assert.NotZero(initStruct.Decimal);
                 Assert.True(initStruct.Bool);
+            });
+        }
+
+        [Test]
+        public void CreateListValueCheckTest()
+        {
+            bool containsZeros = _faker.Create<List<int>>()
+                .Where(p => p == 0).Count() > 0;
+
+            Assert.False(containsZeros);
+        }
+        
+        
+        [Test]
+        [TestCase(typeof(List<List<List<int>>>))]
+        [TestCase(typeof(List<List<decimal>>))]
+        public void CreateListTest(Type type)
+        {
+            var list =(IList)_faker.Create(type);
+
+            Assert.Multiple(() =>
+            {
+                Assert.IsNotEmpty(list);
+                Assert.IsNotEmpty((IList)list[0]);
             });
         }
     }
