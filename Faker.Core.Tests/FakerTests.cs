@@ -1,5 +1,7 @@
 using Faker.Core.Interfaces;
-using Faker.Core;
+using Faker.Tests.TestClasses;
+using Faker.Core.Services;
+using Faker.Core.Generators;
 
 namespace Faker.Core.Tests
 {
@@ -10,7 +12,7 @@ namespace Faker.Core.Tests
         [SetUp]
         public void Setup()
         {
-            _faker = new Faker();
+            _faker = new Services.Faker();
         }
 
         [Test]
@@ -24,28 +26,42 @@ namespace Faker.Core.Tests
         [TestCase(typeof(string))]
         [TestCase(typeof(bool))]
         [TestCase(typeof(char))]
+        [TestCase(typeof(A))]
         public void CreatePrimitiveTest(Type type)
         {
             Assert.DoesNotThrow(() => _faker.Create(type));
         }
 
         [Test]
-        public void CreatePrimitiveNotDefaultValue()
+        [TestCase(typeof(byte))]
+        [TestCase(typeof(short))]
+        [TestCase(typeof(int))]
+        [TestCase(typeof(long))]
+        [TestCase(typeof(float))]
+        [TestCase(typeof(double))]
+        [TestCase(typeof(decimal))]
+        [TestCase(typeof(string))]
+        [TestCase(typeof(bool))]
+        [TestCase(typeof(char))]
+        public void CreatePrimitiveNotDefaultValue(Type type)
         {
-            Assert.Multiple(() =>
-            {
-                Assert.NotZero(_faker.Create<byte>());
-                Assert.NotZero(_faker.Create<short>());
-                Assert.NotZero(_faker.Create<int>());
-                Assert.NotZero(_faker.Create<long>());
-                Assert.NotZero(_faker.Create<float>());
-                Assert.NotZero(_faker.Create<double>());
-                Assert.NotZero(_faker.Create<decimal>());
-                Assert.NotNull(_faker.Create<string>());
-                Assert.True(_faker.Create<bool>());
-                Assert.That(_faker.Create<char>(), Is.Not.EqualTo('\0'));
-            });
+            Assert.That(_faker.Create(type), Is.Not.EqualTo(UserTypeGenerator.GetDefaultValue(type)));
         }
 
+        [Test]
+        public void CreateInitedUserType()
+        {
+            A testClass = _faker.Create<A>();
+
+            Assert.Multiple(() =>
+            {
+                Assert.NotZero(testClass.Id);
+                Assert.NotZero(testClass.Value);
+                Assert.NotNull(testClass.Name);
+                Assert.NotNull(testClass.b);
+                Assert.That('\0', Is.Not.EqualTo(testClass.b.symbol));
+            });
+
+        }
     }
 }

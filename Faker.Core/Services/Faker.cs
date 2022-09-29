@@ -1,7 +1,8 @@
 ﻿using Faker.Core.Interfaces;
 using Faker.Core.Context;
+using Faker.Core.Exceptions;
 
-namespace Faker.Core
+namespace Faker.Core.Services
 {
     public class Faker : IFaker
     {
@@ -19,27 +20,18 @@ namespace Faker.Core
 
         private static List<IValueGenerator> GetAllGenerators()
         {
-            var types = AppDomain.CurrentDomain.GetAssemblies()
+            var generators = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(s => s.GetTypes())
                 .Where(t => t.GetInterfaces().Contains(typeof(IValueGenerator)) && t.IsClass)
+                .Select(t => (IValueGenerator?)Activator.CreateInstance(t))
+                .Where(g => g != null)
                 .ToList();
-
-            List<IValueGenerator> generators = new List<IValueGenerator>();
-            foreach (var type in types)
-            {
-                var generator = Activator.CreateInstance(type) as IValueGenerator;
-                if (generator != null)
-                {
-                    generators.Add(generator);
-                }
-            }
-
             return generators;
         }
 
         public T Create<T>()
         {
-            return (T)CreateInstance(typeof(T)); 
+            return (T)CreateInstance(typeof(T));
         }
 
         public object Create(Type type)
@@ -56,7 +48,7 @@ namespace Faker.Core
                     return generator.Generate(type, _generatorContext);
                 }
             }
-            throw new Exception($"Can't create instance of {type.Name}");
+            throw new TypeException($"Can't create instance of {type.Name}", type);
         }
 
 

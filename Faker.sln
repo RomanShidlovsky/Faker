@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Faker.Core", "Faker.Core\Faker.Core.csproj", "{4E3EA2E7-7412-4B07-A666-CC300CB0CCC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faker.Core.Tests", "Faker.Core.Tests\Faker.Core.Tests.csproj", "{2398E9D1-6D24-47C8-A3CA-931A93DDD147}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Faker.Core.Tests", "Faker.Core.Tests\Faker.Core.Tests.csproj", "{2398E9D1-6D24-47C8-A3CA-931A93DDD147}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
