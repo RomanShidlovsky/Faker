@@ -9,6 +9,7 @@ namespace Faker.Core.Services
     {
         private readonly GeneratorContext _generatorContext;
         private readonly List<IValueGenerator> _valueGenerators;
+        public IFakerConfig? Config { get; }
 
         public Faker()
         {
@@ -17,6 +18,12 @@ namespace Faker.Core.Services
                 this
              );
             _valueGenerators = GetAllGenerators();
+        }
+
+        public Faker(IFakerConfig config)
+            :this()
+        {
+            Config = config;
         }
 
         private static List<IValueGenerator> GetAllGenerators()
@@ -60,6 +67,18 @@ namespace Faker.Core.Services
             throw new TypeException($"Can't create instance of {type.Name}", type);
         }
 
-
+        public object CreateByName(Type type, string name)
+        {
+            if (Config != null)
+            {
+                var  generator = Config.GetGenerator(name);
+                if (generator != null)
+                {
+                    return generator.Generate(type, _generatorContext);
+                }
+                
+            }
+            return CreateInstance(type);
+        }
     }
 }

@@ -34,7 +34,8 @@ namespace Faker.Core.Generators
                 try
                 {
                     var parameters = constructor.GetParameters().
-                        Select(p => context.Faker.Create(p.ParameterType))
+                        Select(p => context.Faker.CreateByName(p.ParameterType, 
+                            typeToCreate.Name+'.'+p.Name.ToLower()))
                         .ToArray();
 
                     return constructor.Invoke(parameters);
@@ -66,7 +67,8 @@ namespace Faker.Core.Generators
                         if (!CanInit(field.FieldType))
                             continue;
                         
-                        field.SetValue(objectToInit, context.Faker.Create(field.FieldType));
+                        field.SetValue(objectToInit, context.Faker.CreateByName(field.FieldType, 
+                            typeToInit.Name+'.'+field.Name.ToLower()));
                     }
                 }
                 catch
@@ -88,7 +90,8 @@ namespace Faker.Core.Generators
                         if (!CanInit(property.PropertyType))
                             continue;
 
-                        property.SetValue(objectToInit, context.Faker.Create(property.PropertyType));
+                        property.SetValue(objectToInit, context.Faker.CreateByName(property.PropertyType,
+                            typeToInit.Name+'.'+property.Name.ToLower()));
                     }
                 }
                 catch

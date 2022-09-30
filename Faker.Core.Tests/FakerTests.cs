@@ -1,8 +1,9 @@
 using System.Reflection;
 using Faker.Core.Interfaces;
 using Faker.Core.Tests.TestClasses;
-using Faker.Core.Services;
+using Faker.Core.Exceptions;
 using Faker.Core.Generators;
+using Faker.Core.Config;
 using System.Collections;
 
 namespace Faker.Core.Tests
@@ -141,6 +142,28 @@ namespace Faker.Core.Tests
                 Assert.IsNotEmpty(list);
                 Assert.IsNotEmpty((IList)list[0]);
             });
+        }
+
+        [Test]
+        public void ConfigTest()
+        {
+            var config = new FakerConfig();
+            config.Add<ConfigTest, string, CityGenerator>(configTest => configTest.City);
+            config.Add<ConfigTest, string, CountryGenerator>(configTest => configTest.Country);
+            var faker = new Services.Faker(config);
+            ConfigTest configTest = faker.Create<ConfigTest>();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(configTest.City, Is.EqualTo("Minsk"));
+                Assert.That(configTest.Country, Is.EqualTo("Belarus"));
+            });
+        }
+
+        [Test]
+        public void CtorThrows()
+        {
+            Assert.Throws<TypeException>(() => { _faker.Create<CtorThrows>(); });
         }
     }
 }
