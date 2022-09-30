@@ -1,8 +1,8 @@
 using System.Reflection;
 using Faker.Core.Interfaces;
 using Faker.Core.Tests.TestClasses;
-using Faker.Core.Exceptions;
 using Faker.Core.Generators;
+using Faker.Core.Exceptions;
 using Faker.Core.Config;
 using System.Collections;
 
