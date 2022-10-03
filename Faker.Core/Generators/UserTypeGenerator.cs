@@ -35,7 +35,7 @@ namespace Faker.Core.Generators
                 {
                     var parameters = constructor.GetParameters().
                         Select(p => context.Faker.CreateByName(p.ParameterType, 
-                            typeToCreate.Name+'.'+p.Name.ToLower()))
+                            typeToCreate.FullName+'.'+p.Name.ToLower()))
                         .ToArray();
 
                     return constructor.Invoke(parameters);
