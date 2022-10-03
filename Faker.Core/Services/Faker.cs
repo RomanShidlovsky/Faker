@@ -28,21 +28,22 @@ namespace Faker.Core.Services
 
         private static List<IValueGenerator> GetAllGenerators()
         {
-            var generators = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(s => s.GetTypes())
-                .Where(t => t.GetInterfaces().Contains(typeof(IValueGenerator)) && t.IsClass)
-                .Select(t => (IValueGenerator?)Activator.CreateInstance(t))
-                .Where(g => g != null)
-                .ToList();
-
-            var userTypeGenerator = generators.Find(g => g.GetType() == typeof(UserTypeGenerator));
-            if (userTypeGenerator != null && generators.IndexOf(userTypeGenerator) != generators.Count - 1)
+            return new List<IValueGenerator>()
             {
-                generators.Remove(userTypeGenerator);
-                generators.Add(userTypeGenerator);
-            }
-
-            return generators;
+                new BoolGenerator(),
+                new ByteGenerator(),
+                new CharGenerator(),
+                new DateTimeGenerator(),
+                new DecimalGenerator(),
+                new DoubleGenerator(),
+                new FloatGenerator(),
+                new IntGenerator(),
+                new LongGenerator(),
+                new ShortGenerator(),
+                new StringGenerator(),
+                new ListGenerator(),
+                new UserTypeGenerator()
+            };
         }
 
         public T Create<T>()

@@ -1,7 +1,7 @@
 ﻿namespace Faker.Core.Tests.TestClasses
 {
     public class C
-    {
+    { 
         public D d { get; set; }
         public string s { get; set; }
     }
