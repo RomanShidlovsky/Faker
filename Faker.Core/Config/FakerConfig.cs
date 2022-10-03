@@ -16,7 +16,7 @@ namespace Faker.Core.Config
                 G? generator = (G)Activator.CreateInstance(typeof(G));
                 if (generator != null)
                 {
-                    _generators.Add(typeof(T).Name+'.'+member.Member.Name.ToLower(), generator);
+                    _generators.Add(typeof(T).FullName+'.'+member.Member.Name.ToLower(), generator);
                 }
             }
             catch

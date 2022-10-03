@@ -13,9 +13,10 @@ namespace Faker.Core.Generators
             var list = (IList?)Activator.CreateInstance(typeToGenerate, listSize);
             if (list != null)
             {
+                var argument = typeToGenerate.GetGenericArguments()[0];
                 for (int i = 0; i < listSize; i++)
                 {
-                    list.Add(context.Faker.Create(typeToGenerate.GetGenericArguments()[0]));
+                    list.Add(context.Faker.Create(argument));
                 }
                 return list;
             }
